@@ -16,6 +16,9 @@
     const PADDLE_HEIGHT = 100;
     const PADDLE_THICKNESS = 10;
 
+    var paddle1Score = 0;
+    var paddle2Score = 0;
+
     var canvas;
     var canvasContext;
 
@@ -78,6 +81,10 @@
       canvasContext.fillStyle = "black";
       canvasContext.fillRect(0, 0, canvas.width, canvas.height);
 
+      // Draw the score
+      canvasContext.fillStyle = "grey";
+      canvasContext.fillText(`${paddle1Score}:${paddle2Score}`, 100, 100);
+
       // Draw a circle
       colorCircle(ballX, ballY, 10, 'white');
  
@@ -91,16 +98,18 @@
     function moveEverything() {
       if (ballX >= canvas.width - PADDLE_THICKNESS) { // If ball has moved beyond right edge
         if (ballY > paddle2Y && ballY < paddle2Y + PADDLE_HEIGHT) {
-          ballSpeedX *= -1;
+          ballSpeedX *= -1; // Bounce back
         } else {
+          paddle1Score++; // Paddle 1 wins
           ballReset();
         }
       }
 
       if (ballX <= PADDLE_THICKNESS) { // If ball has moved beyond left edge
         if (ballY > paddle1Y && ballY < paddle1Y + PADDLE_HEIGHT) {
-          ballSpeedX *= -1;
+          ballSpeedX *= -1; // Bounce back
         } else {
+          paddle2Score++; // Paddle2 wins
           ballReset();
         }
       }
