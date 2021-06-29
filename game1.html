@@ -9,29 +9,32 @@
   </body>
 
   <script>
+    // Ball variables
     var ballX = 75, ballY = 75;
     var ballSpeedX = 5, ballSpeedY = 5;
+
+    // Paddle vairiables
     var paddle1Y = 250;
     var paddle2Y = 250;
     const PADDLE_HEIGHT = 100;
     const PADDLE_THICKNESS = 10;
+    const PADDLE_MAX_SPEED = 10;
 
     var paddle1Score = 0;
     var paddle2Score = 0;
 
+    // Canvas variables
     var canvas;
     var canvasContext;
 
     window.onload = function () {
       // window.onload gets run automatically when the page finishes loading
-      console.log("Hello World!");
-
       canvas = document.getElementById("gameCanvas");
       canvasContext = canvas.getContext("2d");
 
       canvas.addEventListener('mousemove', function(evt) {
         var mousePos = calculateMousePos(evt);
-        paddle2Y = mousePos.y - (PADDLE_HEIGHT / 2);
+        // paddle2Y = mousePos.y - (PADDLE_HEIGHT / 2);
         paddle1Y = mousePos.y - (PADDLE_HEIGHT / 2);
       })
 
@@ -77,6 +80,21 @@
       console.log(`reset ball to ${ballX}, ${ballY}`)
     }
 
+    function moveComputerPaddle() {
+      var ballPaddleDelta = ballY - (paddle2Y + PADDLE_HEIGHT / 2);
+      if (ballPaddleDelta === 0) {  // The ball is at the center of the paddle
+        // Do not move the paddle
+      } else if (ballPaddleDelta > 0) { // The ball is below the center of paddle
+        var moveDelta = ballPaddleDelta > PADDLE_MAX_SPEED ? PADDLE_MAX_SPEED : ballPaddleDelta;
+        paddle2Y += moveDelta;
+      } else { // The ball is above the center of paddle
+        var moveDelta = -ballPaddleDelta > PADDLE_MAX_SPEED ? -PADDLE_MAX_SPEED : ballPaddleDelta;
+        paddle2Y += moveDelta;
+      }
+
+      // console.log(`Paddle 2's speed is ${moveDelta}`)
+    }
+
     function drawEverything() {
       // Clear the game view
       canvasContext.fillStyle = "black";
@@ -97,24 +115,26 @@
     }
 
     function moveEverything() {
-      if (ballX >= canvas.width - PADDLE_THICKNESS) { // If ball has moved beyond right edge
+      moveComputerPaddle();
+
+      if (ballX > canvas.width) { // If ball has moved beyond right edge
         if (ballY > paddle2Y && ballY < paddle2Y + PADDLE_HEIGHT) {
           ballSpeedX *= -1; // Bounce back
 
-          var deltaY = ballY - (paddle1Y + PADDLE_HEIGHT/2);
-          ballSpeedY = deltaY * 0.35;
+          var deltaY = ballY - (paddle2Y + PADDLE_HEIGHT/2);
+          ballSpeedY = deltaY * 0.3;
         } else {
           paddle1Score++; // Paddle 1 wins
           ballReset();
         }
       }
 
-      if (ballX <= PADDLE_THICKNESS) { // If ball has moved beyond left edge
+      if (ballX < 0) { // If ball has moved beyond left edge
         if (ballY > paddle1Y && ballY < paddle1Y + PADDLE_HEIGHT) {
           ballSpeedX *= -1; // Bounce back
 
-          var deltaY = ballY - (paddle2Y + PADDLE_HEIGHT/2);
-          ballSpeedY = deltaY * 0.35;
+          var deltaY = ballY - (paddle1Y + PADDLE_HEIGHT/2);
+          ballSpeedY = deltaY * 0.3;
         } else {
           paddle2Score++; // Paddle2 wins
           ballReset();
