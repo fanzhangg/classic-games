@@ -20,6 +20,7 @@
     const PADDLE_THICKNESS = 10;
     const PADDLE_MAX_SPEED = 10;
 
+    // score
     var paddle1Score = 0;
     var paddle2Score = 0;
 
@@ -72,6 +73,18 @@
     }
 
     function ballReset(){
+      if (paddle1Score + paddle2Score === 3) {
+        paddle1Score = 0;
+        paddle2Score = 0;
+
+        // Ball variables
+        ballX = 75, ballY = 75;
+        ballSpeedX = 5, ballSpeedY = 5;
+
+        // Paddle vairiables
+        paddle1Y = 250;
+        paddle2Y = 250;
+      }
       // Reverse ball speed
       ballSpeedX = - ballSpeedX;
       // center ball on screen
@@ -82,12 +95,10 @@
 
     function moveComputerPaddle() {
       var ballPaddleDelta = ballY - (paddle2Y + PADDLE_HEIGHT / 2);
-      if (ballPaddleDelta === 0) {  // The ball is at the center of the paddle
-        // Do not move the paddle
-      } else if (ballPaddleDelta > 0) { // The ball is below the center of paddle
+      if (ballPaddleDelta > 35) { // The ball is below the center of paddle
         var moveDelta = ballPaddleDelta > PADDLE_MAX_SPEED ? PADDLE_MAX_SPEED : ballPaddleDelta;
         paddle2Y += moveDelta;
-      } else { // The ball is above the center of paddle
+      } else if (ballPaddleDelta < -35) { // The ball is above the center of paddle
         var moveDelta = -ballPaddleDelta > PADDLE_MAX_SPEED ? -PADDLE_MAX_SPEED : ballPaddleDelta;
         paddle2Y += moveDelta;
       }
@@ -97,7 +108,7 @@
 
     function drawEverything() {
       // Clear the game view
-      canvasContext.fillStyle = "black";
+      canvasContext.fillStyle = "#264653";
       canvasContext.fillRect(0, 0, canvas.width, canvas.height);
 
       // Draw the score
@@ -105,13 +116,13 @@
       canvasContext.fillText(`${paddle1Score}:${paddle2Score}`, 100, 100);
 
       // Draw a circle
-      colorCircle(ballX, ballY, 10, 'yellow');
+      colorCircle(ballX, ballY, 10, '#ffb703');
  
       // Draw left paddle
-      colorRect(0, paddle1Y, PADDLE_THICKNESS, PADDLE_HEIGHT, "white");
+      colorRect(0, paddle1Y, PADDLE_THICKNESS, PADDLE_HEIGHT, "#8ecae6");
 
       // Draw right paddle
-      colorRect(canvas.width - PADDLE_THICKNESS, paddle2Y, PADDLE_THICKNESS, PADDLE_HEIGHT, "white");
+      colorRect(canvas.width - PADDLE_THICKNESS, paddle2Y, PADDLE_THICKNESS, PADDLE_HEIGHT, "#8ecae6");
     }
 
     function moveEverything() {
