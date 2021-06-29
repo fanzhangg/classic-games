@@ -10,8 +10,10 @@
 
   <script>
     // Ball variables
-    var ballX = 75, ballY = 75;
-    var ballSpeedX = 5, ballSpeedY = 5;
+    var ballX = 75,
+      ballY = 75;
+    var ballSpeedX = 5,
+      ballSpeedY = 5;
 
     // Paddle vairiables
     var paddle1Y = 250;
@@ -36,32 +38,33 @@
       canvas = document.getElementById("gameCanvas");
       canvasContext = canvas.getContext("2d");
 
-      canvas.addEventListener('mousemove', function(evt) {
+      canvas.addEventListener("mousemove", function (evt) {
         var mousePos = calculateMousePos(evt);
         // paddle2Y = mousePos.y - (PADDLE_HEIGHT / 2);
-        paddle1Y = mousePos.y - (PADDLE_HEIGHT / 2);
-      })
+        paddle1Y = mousePos.y - PADDLE_HEIGHT / 2;
+      });
 
-      canvas.addEventListener('mousedown', handleMouseClick);
+      canvas.addEventListener("mousedown", handleMouseClick);
 
-      canvasContext.textAlign = 'center';
+      canvasContext.textAlign = "center";
 
       // game logic
       var framesPerSecond = 30;
-      setInterval(function() {
+      setInterval(function () {
         moveEverything();
         drawEverything();
-      }, 1000/framesPerSecond);
+      }, 1000 / framesPerSecond);
     };
 
     function calculateMousePos(evt) {
-      var rect = canvas.getBoundingClientRect(), root = document.documentElement;
+      var rect = canvas.getBoundingClientRect(),
+        root = document.documentElement;
 
       var mouseX = evt.clientX - rect.left - root.scrollLeft;
       var mouseY = evt.clientY - rect.top - root.scrollTop;
       return {
         x: mouseX,
-        y: mouseY
+        y: mouseY,
       };
     }
 
@@ -80,39 +83,46 @@
       canvasContext.fill();
     }
 
-    function colorCircle(topLeftX, topLeftY, radius, fillColor){
+    function colorCircle(topLeftX, topLeftY, radius, fillColor) {
       canvasContext.fillStyle = fillColor;
       canvasContext.beginPath();
       canvasContext.arc(topLeftX, topLeftY, radius, 0, Math.PI * 2, true);
       canvasContext.fill();
     }
 
-
     function colorText(showWords, textX, textY, fillColor) {
       canvasContext.fillStyle = fillColor;
       canvasContext.fillText(showWords, textX, textY);
     }
 
-    function ballReset(){
+    function ballReset() {
       if (paddle1Score >= WINNING_SCORE || paddle2Score >= WINNING_SCORE) {
         showingWinScreen = true;
       }
 
       // Reverse ball speed
-      ballSpeedX = - ballSpeedX;
+      ballSpeedX = -ballSpeedX;
       // center ball on screen
-      ballX = canvas.width/2;
-      ballY = canvas.height/2;
-      console.log(`reset ball to ${ballX}, ${ballY}`)
+      ballX = canvas.width / 2;
+      ballY = canvas.height / 2;
+      console.log(`reset ball to ${ballX}, ${ballY}`);
     }
 
     function moveComputerPaddle() {
       var ballPaddleDelta = ballY - (paddle2Y + PADDLE_HEIGHT / 2);
-      if (ballPaddleDelta > 35) { // The ball is below the center of paddle
-        var moveDelta = ballPaddleDelta > PADDLE_MAX_SPEED ? PADDLE_MAX_SPEED : ballPaddleDelta;
+      if (ballPaddleDelta > 35) {
+        // The ball is below the center of paddle
+        var moveDelta =
+          ballPaddleDelta > PADDLE_MAX_SPEED
+            ? PADDLE_MAX_SPEED
+            : ballPaddleDelta;
         paddle2Y += moveDelta;
-      } else if (ballPaddleDelta < -35) { // The ball is above the center of paddle
-        var moveDelta = -ballPaddleDelta > PADDLE_MAX_SPEED ? -PADDLE_MAX_SPEED : ballPaddleDelta;
+      } else if (ballPaddleDelta < -35) {
+        // The ball is above the center of paddle
+        var moveDelta =
+          -ballPaddleDelta > PADDLE_MAX_SPEED
+            ? -PADDLE_MAX_SPEED
+            : ballPaddleDelta;
         paddle2Y += moveDelta;
       }
 
@@ -121,30 +131,51 @@
 
     function drawEverything() {
       // clear the game view by filling it with black
-      colorRect(0, 0, canvas.width, canvas.height, '#264653');
+      colorRect(0, 0, canvas.width, canvas.height, "#264653");
 
       if (showingWinScreen) {
         if (paddle1Score >= WINNING_SCORE) {
-          colorText("LEFT PLAYER WINS!", canvas.width/2, canvas.height/2, "white");
+          colorText(
+            "LEFT PLAYER WINS!",
+            canvas.width / 2,
+            canvas.height / 2,
+            "white"
+          );
         } else if (paddle2Score >= WINNING_SCORE) {
-          colorText("RIGHT PLAYER WINS!", canvas.windth/2, canvas.height/2, "white");
+          colorText(
+            "RIGHT PLAYER WINS!",
+            canvas.windth / 2,
+            canvas.height / 2,
+            "white"
+          );
         }
-        colorText("LEFT PLAYER WINS!", canvas.width/2, canvas.height/2, "white");
+        colorText(
+          "LEFT PLAYER WINS!",
+          canvas.width / 2,
+          canvas.height / 2,
+          "white"
+        );
       } else {
         // Draw a circle
-        colorCircle(ballX, ballY, 10, '#ffb703');
-  
+        colorCircle(ballX, ballY, 10, "#ffb703");
+
         // Draw left paddle
         colorRect(0, paddle1Y, PADDLE_THICKNESS, PADDLE_HEIGHT, "#8ecae6");
 
         // Draw right paddle
-        colorRect(canvas.width - PADDLE_THICKNESS, paddle2Y, PADDLE_THICKNESS, PADDLE_HEIGHT, "#8ecae6");
+        colorRect(
+          canvas.width - PADDLE_THICKNESS,
+          paddle2Y,
+          PADDLE_THICKNESS,
+          PADDLE_HEIGHT,
+          "#8ecae6"
+        );
       }
 
       // display text on screen - will be used for score
-      colorText(paddle1Score,100,100,'white');
-      colorText(paddle2Score,canvas.width-100,100,'white');
-      }
+      colorText(paddle1Score, 100, 100, "white");
+      colorText(paddle2Score, canvas.width - 100, 100, "white");
+    }
 
     function moveEverything() {
       if (showingWinScreen) {
@@ -153,11 +184,12 @@
 
       moveComputerPaddle();
 
-      if (ballX > canvas.width) { // If ball has moved beyond right edge
+      if (ballX > canvas.width) {
+        // If ball has moved beyond right edge
         if (ballY > paddle2Y && ballY < paddle2Y + PADDLE_HEIGHT) {
           ballSpeedX *= -1; // Bounce back
 
-          var deltaY = ballY - (paddle2Y + PADDLE_HEIGHT/2);
+          var deltaY = ballY - (paddle2Y + PADDLE_HEIGHT / 2);
           ballSpeedY = deltaY * 0.3;
         } else {
           paddle1Score++; // Paddle 1 wins
@@ -165,18 +197,20 @@
         }
       }
 
-      if (ballX < 0) { // If ball has moved beyond left edge
+      if (ballX < 0) {
+        // If ball has moved beyond left edge
         if (ballY > paddle1Y && ballY < paddle1Y + PADDLE_HEIGHT) {
           ballSpeedX *= -1; // Bounce back
 
-          var deltaY = ballY - (paddle1Y + PADDLE_HEIGHT/2);
+          var deltaY = ballY - (paddle1Y + PADDLE_HEIGHT / 2);
           ballSpeedY = deltaY * 0.3;
         } else {
           paddle2Score++; // Paddle2 wins
           ballReset();
         }
       }
-      if (ballY >= canvas.height || ballY <= 0){ // Up and bottom edge
+      if (ballY >= canvas.height || ballY <= 0) {
+        // Up and bottom edge
         ballSpeedY *= -1;
       }
       ballX += ballSpeedX;
