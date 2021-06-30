@@ -112,17 +112,11 @@
       var ballPaddleDelta = ballY - (paddle2Y + PADDLE_HEIGHT / 2);
       if (ballPaddleDelta > 35) {
         // The ball is below the center of paddle
-        var moveDelta =
-          ballPaddleDelta > PADDLE_MAX_SPEED
-            ? PADDLE_MAX_SPEED
-            : ballPaddleDelta;
+        var moveDelta = PADDLE_MAX_SPEED;
         paddle2Y += moveDelta;
       } else if (ballPaddleDelta < -35) {
         // The ball is above the center of paddle
-        var moveDelta =
-          -ballPaddleDelta > PADDLE_MAX_SPEED
-            ? -PADDLE_MAX_SPEED
-            : ballPaddleDelta;
+        var moveDelta = - PADDLE_MAX_SPEED;
         paddle2Y += moveDelta;
       }
 
@@ -135,26 +129,23 @@
 
       if (showingWinScreen) {
         if (paddle1Score >= WINNING_SCORE) {
+          console.log("LEFT PLAYER WINS!")
           colorText(
-            "LEFT PLAYER WINS!",
-            canvas.width / 2,
-            canvas.height / 2,
-            "white"
-          );
-        } else if (paddle2Score >= WINNING_SCORE) {
-          colorText(
-            "RIGHT PLAYER WINS!",
-            canvas.windth / 2,
-            canvas.height / 2,
-            "white"
-          );
-        }
-        colorText(
           "LEFT PLAYER WINS!",
           canvas.width / 2,
           canvas.height / 2,
           "white"
         );
+        } else if (paddle2Score >= WINNING_SCORE) {
+          console.log("RIGHT PLAYER WINS!")
+          colorText(
+          "RIGHT PLAYER WINS!",
+          canvas.width / 2,
+          canvas.height / 2,
+          "white"
+        );
+        colorText("Cick to Restart", canvas.width / 2, canvas.height / 2 + 100, "white");
+        }
       } else {
         // Draw a circle
         colorCircle(ballX, ballY, 10, "#ffb703");
