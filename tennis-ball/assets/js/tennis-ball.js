@@ -175,7 +175,6 @@ function moveEverything() {
     if (ballY > paddle2Y && ballY < paddle2Y + PADDLE_HEIGHT) {
       ballDirection *= -1; // Bounce back
       hits += 1;
-      console.log("rounds:", hits);
 
       var deltaY = ballY - (paddle2Y + PADDLE_HEIGHT / 2);
       ballSpeedY = deltaY * 0.3;
@@ -191,7 +190,6 @@ function moveEverything() {
       ballDirection *= -1; // Bounce back
 
       hits += 1;
-      console.log("rounds:", hits);
 
       var deltaY = ballY - (paddle1Y + PADDLE_HEIGHT / 2);
       ballSpeedY = deltaY * 0.3;
@@ -213,8 +211,6 @@ function moveEverything() {
   } else {
     speedScale = 2;
   }
-
-  console.log("SpeedScale:", speedScale);
 
   ballSpeedX = speedScale * ballDirection * 5;
   // ballSpeedY = speedScale * ballSpeedY;
