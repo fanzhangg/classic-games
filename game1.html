@@ -23,7 +23,7 @@
     const PADDLE_HEIGHT = 100;
     const PADDLE_THICKNESS = 10;
     const PADDLE_MAX_SPEED = 10;
-    const WINNING_SCORE = 3;
+    const WINNING_SCORE = 2;
 
     // score
     var paddle1Score = 0;
@@ -91,6 +91,7 @@
     }
 
     function colorText(showWords, textX, textY, fillColor) {
+      canvasContext.font = "30px Arial";
       canvasContext.fillStyle = fillColor;
       canvasContext.fillText(showWords, textX, textY);
     }
@@ -147,6 +148,9 @@
         colorText("Cick to Restart", canvas.width / 2, canvas.height / 2 + 100, "white");
         }
       } else {
+        // Draw a dash line
+        colorRect(canvas.width / 2 - 5, 0, 10, canvas.height, "#436370");
+
         // Draw a circle
         colorCircle(ballX, ballY, 10, "#ffb703");
 
