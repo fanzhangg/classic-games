@@ -18,6 +18,9 @@ const WINNING_SCORE = 2;
 var paddle1Score = 0;
 var paddle2Score = 0;
 
+var hits = 0;
+var ballDirection = 1;  // 1 when ball runs toward right, -1 when ball runs toward left
+
 // Canvas variables
 var canvas;
 var canvasContext;
@@ -65,21 +68,6 @@ function handleMouseClick(evt) {
   }
 }
 
-function _loadFont(fontname){
-  var canvas = document.createElement("canvas");
-  //Setting the height and width is not really required
-  canvas.width = 16;
-  canvas.height = 16;
-  var ctx = canvas.getContext("2d");
-
-  //There is no need to attach the canvas anywhere,
-  //calling fillText is enough to make the browser load the active font
-
-  //If you have more than one custom font, you can just draw all of them here
-  ctx.font = "4px "+fontname;
-  ctx.fillText("text", 0, 8);
-}
-
 function colorRect(topLeftX, topLeftY, boxWidth, boxHeight, fillColor) {
   canvasContext.fillStyle = fillColor;
   canvasContext.beginPath();
@@ -105,8 +93,9 @@ function ballReset() {
     showingWinScreen = true;
   }
 
+  hits = 0;
   // Reverse ball speed
-  ballSpeedX = -ballSpeedX;
+  ballDirection = - ballDirection;
   // center ball on screen
   ballX = canvas.width / 2;
   ballY = canvas.height / 2;
@@ -138,6 +127,7 @@ function drawEverything() {
       "white",
       30
     );
+    colorText("Cick to Restart", canvas.width / 2, canvas.height / 2 + 100, "white", 10);
     } else if (paddle2Score >= WINNING_SCORE) {
       colorText(
       "RIGHT PLAYER WINS!",
@@ -183,7 +173,9 @@ function moveEverything() {
   if (ballX > canvas.width) {
     // If ball has moved beyond right edge
     if (ballY > paddle2Y && ballY < paddle2Y + PADDLE_HEIGHT) {
-      ballSpeedX *= -1; // Bounce back
+      ballDirection *= -1; // Bounce back
+      hits += 1;
+      console.log("rounds:", hits);
 
       var deltaY = ballY - (paddle2Y + PADDLE_HEIGHT / 2);
       ballSpeedY = deltaY * 0.3;
@@ -196,7 +188,10 @@ function moveEverything() {
   if (ballX < 0) {
     // If ball has moved beyond left edge
     if (ballY > paddle1Y && ballY < paddle1Y + PADDLE_HEIGHT) {
-      ballSpeedX *= -1; // Bounce back
+      ballDirection *= -1; // Bounce back
+
+      hits += 1;
+      console.log("rounds:", hits);
 
       var deltaY = ballY - (paddle1Y + PADDLE_HEIGHT / 2);
       ballSpeedY = deltaY * 0.3;
@@ -209,6 +204,21 @@ function moveEverything() {
     // Up and bottom edge
     ballSpeedY *= -1;
   }
+
+  var speedScale = 0;
+
+  // Increament the speed at every 3th hits until the speed scale is 2
+  if (speedScale <= 2) {
+    speedScale = 1 + 0.2 * Math.floor(hits / 3);
+  } else {
+    speedScale = 2;
+  }
+
+  console.log("SpeedScale:", speedScale);
+
+  ballSpeedX = speedScale * ballDirection * 5;
+  // ballSpeedY = speedScale * ballSpeedY;
+
   ballX += ballSpeedX;
   ballY += ballSpeedY;
 }
