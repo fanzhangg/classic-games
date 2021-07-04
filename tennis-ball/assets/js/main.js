@@ -21,6 +21,11 @@ var paddle2Score = 0;
 var hits = 0;
 var ballDirection = 1;  // 1 when ball runs toward right, -1 when ball runs toward left
 
+// audio
+var ballBoundSound = new soundOverlapsClass("assets/resource/sounds/bloop");
+var ballMissSound = new soundOverlapsClass("assets/resource/sounds/miss");
+var winSound = new soundOverlapsClass("assets/resource/sounds/win");
+
 // Canvas variables
 var canvas;
 var canvasContext;
@@ -91,6 +96,7 @@ function colorText(showWords, textX, textY, fillColor, fontSize) {
 function ballReset() {
   if (paddle1Score >= WINNING_SCORE || paddle2Score >= WINNING_SCORE) {
     showingWinScreen = true;
+    winSound.play();
   }
 
   hits = 0;
@@ -173,12 +179,14 @@ function moveEverything() {
   if (ballX > canvas.width) {
     // If ball has moved beyond right edge
     if (ballY > paddle2Y && ballY < paddle2Y + PADDLE_HEIGHT) {
+      ballBoundSound.play();
       ballDirection *= -1; // Bounce back
       hits += 1;
 
       var deltaY = ballY - (paddle2Y + PADDLE_HEIGHT / 2);
-      ballSpeedY = deltaY * 0.3;
+      ballSpeedY = deltaY * 0.35;
     } else {
+      ballMissSound.play();
       paddle1Score++; // Paddle 1 wins
       ballReset();
     }
@@ -187,13 +195,16 @@ function moveEverything() {
   if (ballX < 0) {
     // If ball has moved beyond left edge
     if (ballY > paddle1Y && ballY < paddle1Y + PADDLE_HEIGHT) {
+      ballBoundSound.play();
       ballDirection *= -1; // Bounce back
 
       hits += 1;
 
       var deltaY = ballY - (paddle1Y + PADDLE_HEIGHT / 2);
       ballSpeedY = deltaY * 0.3;
+      
     } else {
+      ballMissSound.play();
       paddle2Score++; // Paddle2 wins
       ballReset();
     }
