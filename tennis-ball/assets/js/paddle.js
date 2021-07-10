@@ -30,3 +30,7 @@ function moveComputerPaddle() {
      paddle2Y += PADDLE_COMPUTER_MOVE_SPEED;
   }
 }
+
+function reverseMovePaddle2() {
+   paddle2Y = canvas.height - paddle1Y;
+}

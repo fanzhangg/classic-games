@@ -41,7 +41,8 @@ function ballHitCountAndSpeedChange() {
 
 function ballReset() {
     if (paddle1Score >= WINNING_SCORE || paddle2Score >= WINNING_SCORE) {
-        showingWinScreen = true;
+        gameStatus = "win";
+        console.log("gameStatus: win");
     }
 
     // reverse ball heading, so whoever scored a point "serves"
