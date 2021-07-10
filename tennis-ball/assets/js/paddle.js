@@ -1,18 +1,20 @@
 var paddle1Score = 0, paddle2Score = 0;
 var paddle1Y = 250, paddle2Y = 250;
 
-const PADDLE_HEIGHT = 80;
-const PADDLE_THICKNESS = 10;
+const PADDLE_HEIGHT = 100;
+const PADDLE_THICKNESS = BALL_SPEED_MAX + 2;
+
+const PADDLE_DIST_FROM_EDGE = 120;
 
 const PADDLE_COMPUTER_MOVE_SPEED = 9.0;
 
 function paddlesDraw() {
   // draw a white rectangle to use as the left player's paddle
-  colorRect(0, paddle1Y, PADDLE_THICKNESS, PADDLE_HEIGHT, 'white');
+  colorRect(PADDLE_DIST_FROM_EDGE, paddle1Y, 10, PADDLE_HEIGHT, 'white');
 
   // draw a white rectangle to use as the right player's paddle 
-  colorRect(canvas.width-PADDLE_THICKNESS, paddle2Y,   
-           PADDLE_THICKNESS, PADDLE_HEIGHT, 'white');
+  colorRect(canvas.width-10-PADDLE_DIST_FROM_EDGE, paddle2Y,   
+           10, PADDLE_HEIGHT, 'white');
 }
 
 function moveComputerPaddle() {

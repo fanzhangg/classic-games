@@ -65,36 +65,47 @@ function ballDraw() {
 }
 
 function ballMove() {
-    if (ballX < 0) { // if ball has moved beyond the left edge
-        if (ballY > paddle1Y && ballY < paddle1Y + PADDLE_HEIGHT) {
-            ballSpeedX *= -1; // reverse ball's horizontal direction
+    // if ball has moved whithin the left paddle
+    if (ballSpeedX < 0.0 &&
+        ballY > paddle1Y &&
+        ballY < paddle1Y + PADDLE_HEIGHT &&
+        ballX > PADDLE_DIST_FROM_EDGE &&
+        ballX < PADDLE_DIST_FROM_EDGE + PADDLE_THICKNESS) {
+        ballSpeedX *= -1; // reverse ball's horizontal direction
 
-            ballHitCountAndSpeedChange();
+        ballHitCountAndSpeedChange();
 
-            var deltaY = ballY - (paddle1Y + PADDLE_HEIGHT / 2);
-            ballSpeedY = deltaY * 0.35;
-            ballBounceSound.play();
-        } else {
-            paddle2Score++;
-            ballMissSound.play();
-            ballReset();
-        }
+        var deltaY = ballY - (paddle1Y + PADDLE_HEIGHT / 2);
+        ballSpeedY = deltaY * 0.35;
+        ballBounceSound.play();
     }
 
-    if (ballX > canvas.width) { // if ball has moved beyond the right edge
-        if (ballY > paddle2Y && ballY < paddle2Y + PADDLE_HEIGHT) {
-            ballSpeedX *= -1; // reverse ball's horizontal direction
+    if (ballX < 0) { // If ball has moved beyond the left edge
+        paddle2Score++;
+        ballMissSound.play();
+        ballReset();
+    }
 
-            ballHitCountAndSpeedChange();
 
-            var deltaY = ballY - (paddle2Y + PADDLE_HEIGHT / 2);
-            ballSpeedY = deltaY * 0.35;
-            ballBounceSound.play();
-        } else {
-            paddle1Score++;
-            ballMissSound.play();
-            ballReset();
-        }
+    // if ball has moved whithin the right paddle
+    if (ballSpeedX > 0.0 &&
+        ballY > paddle2Y && ballY < paddle2Y + PADDLE_HEIGHT &&
+        ballX < canvas.width - PADDLE_DIST_FROM_EDGE &&
+        ballX > canvas.width - (PADDLE_DIST_FROM_EDGE + PADDLE_THICKNESS)) {
+        ballSpeedX *= -1; // reverse ball's horizontal direction
+
+        ballHitCountAndSpeedChange();
+
+        var deltaY = ballY - (paddle2Y + PADDLE_HEIGHT / 2);
+        ballSpeedY = deltaY * 0.35;
+        ballBounceSound.play();
+    }
+
+    // If the ball has moved beyond the right edge
+    if (ballX > canvas.width) {
+        paddle1Score++;
+        ballMissSound.play();
+        ballReset();
     }
 
     if (ballY < 0) { // if ball has moved beyond the top edge
