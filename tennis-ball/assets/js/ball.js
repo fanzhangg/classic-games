@@ -62,7 +62,7 @@ function ballReset() {
 }
 
 function ballDraw() {
-    colorCircle(ballX, ballY, 10, 'white');
+    colorCircle(ballX, ballY, 10, '#ffb703');
 }
 
 function ballMove() {

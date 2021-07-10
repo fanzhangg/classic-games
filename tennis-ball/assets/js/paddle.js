@@ -9,12 +9,30 @@ const PADDLE_DIST_FROM_EDGE = 120;
 const PADDLE_COMPUTER_MOVE_SPEED = 9.0;
 
 function paddlesDraw() {
+   if (ballSpeedX < 0.0 &&
+      ballY > paddle1Y &&
+      ballY < paddle1Y + PADDLE_HEIGHT &&
+      ballX > PADDLE_DIST_FROM_EDGE &&
+      ballX < PADDLE_DIST_FROM_EDGE + PADDLE_THICKNESS) {
+         colorRect(PADDLE_DIST_FROM_EDGE, paddle1Y, 10, PADDLE_HEIGHT, 'white');
+      } else {
+         colorRect(PADDLE_DIST_FROM_EDGE, paddle1Y, 10, PADDLE_HEIGHT, '#8ecae6');
+      }
   // draw a white rectangle to use as the left player's paddle
-  colorRect(PADDLE_DIST_FROM_EDGE, paddle1Y, 10, PADDLE_HEIGHT, 'white');
+  
 
   // draw a white rectangle to use as the right player's paddle 
-  colorRect(canvas.width-10-PADDLE_DIST_FROM_EDGE, paddle2Y,   
-           10, PADDLE_HEIGHT, 'white');
+  if (ballSpeedX > 0.0 &&
+   ballY > paddle2Y && ballY < paddle2Y + PADDLE_HEIGHT &&
+   ballX < canvas.width - PADDLE_DIST_FROM_EDGE &&
+   ballX > canvas.width - (PADDLE_DIST_FROM_EDGE + PADDLE_THICKNESS)) {
+      colorRect(canvas.width-10-PADDLE_DIST_FROM_EDGE, paddle2Y,   
+         10, PADDLE_HEIGHT, 'white');
+   } else {
+      colorRect(canvas.width-10-PADDLE_DIST_FROM_EDGE, paddle2Y,   
+         10, PADDLE_HEIGHT, '#8ecae6');
+   }
+  
 }
 
 function moveComputerPaddle() {

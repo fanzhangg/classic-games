@@ -1,6 +1,6 @@
 var gameStatus = "start";
 
-const WINNING_SCORE = 11;
+const WINNING_SCORE = 3;
 
 var canvas, canvasContext;
 
@@ -38,32 +38,39 @@ function moveEverything() {
 
 function drawNet() {
   for (var i = 0; i < canvas.height; i += 40) {
-    colorRect(canvas.width / 2 - 1, i, 2, 20, 'white');
+    colorRect(canvas.width / 2 - 1, i, 2, 20, '#436370');
   }
 }
 
 function drawEverything() {
   // clear the game view by filling it with black
-  colorRect(0, 0, canvas.width, canvas.height, 'black');
+  colorRect(0, 0, canvas.width, canvas.height, "#264653");
 
   if (gameStatus === "win") {
     if (paddle1Score >= WINNING_SCORE) {
-      colorText("LEFT PLAYER WINS!", canvas.width / 2, canvas.height / 2, 'white');
+      colorText("LEFT PLAYER WINS!", canvas.width / 2, canvas.height / 2, 'white', 30);
     } else if (paddle2Score >= WINNING_SCORE) {
-      colorText("RIGHT PLAYER WINS!", canvas.width / 2, canvas.height / 2, 'white');
+      colorText("RIGHT PLAYER WINS!", canvas.width / 2, canvas.height / 2, 'white', 30);
     }
-    colorText("-- press 1 to play with yourself, press 2 for play with an AI --",
-                canvas.width/2,canvas.height-20,'white');
+    colorText("1 - Play with Youself",
+      canvas.width / 2, canvas.height - 100, 'white');
+    colorText("2 - Play with an AI",
+      canvas.width / 2, canvas.height - 60, 'white');
     // display text on screen - will be used for score
-    colorText(paddle1Score, 100, 100, 'white');
-    colorText(paddle2Score, canvas.width - 100, 100, 'white');
+    colorText(paddle1Score, 100, 100, '#436370', 30);
+    colorText(paddle2Score, canvas.width - 100, 100, '#436370', 30);
   }
-  else if (gameStatus === "start"){
-    colorText("Ping Pong +", canvas.width / 2, 100, 'white');
-    colorText("-- press 1 to play with yourself, press 2 for play with an AI --",
-                canvas.width/2,canvas.height-20,'white');
+  else if (gameStatus === "start") {
+    colorText("PING PONG +", canvas.width / 2, canvas.height / 2, 'white', 30);
+    colorText("1 - Play with Youself",
+      canvas.width / 2, canvas.height - 100, 'white');
+    colorText("2 - Play with an AI",
+      canvas.width / 2, canvas.height - 60, 'white');
   }
   else if (gameStatus === "single") {
+    // display text on screen - will be used for score
+    colorText(`Round ${paddle1Score + paddle2Score}`, canvas.width / 2, 100, '#436370', 20);
+
     paddlesDraw();
 
     // draw net in the middle of the playfield
@@ -71,12 +78,12 @@ function drawEverything() {
 
     // draw the ball
     ballDraw();
-    // display text on screen - will be used for score
-    colorText(paddle1Score, 100, 100, 'white');
-    colorText(paddle2Score, canvas.width - 100, 100, 'white');
-    colorText("Play with yourself", canvas.width / 2, 100, 'white');
   }
   else if (gameStatus === "ai") {
+    // display text on screen - will be used for score
+    colorText(paddle1Score, 100, 100, '#436370', 30);
+    colorText(paddle2Score, canvas.width - 100, 100, '#436370', 30);
+
     paddlesDraw();
 
     // draw net in the middle of the playfield
@@ -84,9 +91,6 @@ function drawEverything() {
 
     // draw the ball
     ballDraw();
-    // display text on screen - will be used for score
-    colorText(paddle1Score, 100, 100, 'white');
-    colorText(paddle2Score, canvas.width - 100, 100, 'white');
-    colorText("Play with an AI", canvas.width / 2, 100, 'white');
+    
   }
 }
