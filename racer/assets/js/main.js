@@ -12,6 +12,17 @@ const KEY_UP_ARROW = 38;
 const KEY_DOWN_ARROW = 40;
 const KEY_LEFT_ARROW = 37;
 const KEY_RIGHT_ARROW = 39;
+const GROUNDSPEED_DECAY_MULT = 0.94;
+const DRIVE_POWER = 0.5;
+const REVERSE_POWER = 0.2;
+const TURN_RATE = 0.03;
+const MIN_TURN_SPEED = 0.5;
+
+// keyboard hold state variables, to use keys more like buttons
+var keyHeld_Gas = false;
+var keyHeld_Reverse = false;
+var keyHeld_TurnLeft = false;
+var keyHeld_TurnRight = false;
 
 var trackGrid =
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -111,25 +122,29 @@ function bounceOffTrackAtPixelCoord(pixelX, pixelY) {
     }
 }
 
+function setKeyHoldState(thisKey, setTo) {
+    if (thisKey == KEY_UP_ARROW) {
+        keyHeld_Gas = setTo;
+    }
+    if (thisKey == KEY_DOWN_ARROW) {
+        keyHeld_Reverse = setTo;
+    }
+    if (thisKey == KEY_LEFT_ARROW) {
+        keyHeld_TurnLeft = setTo;
+    }
+    if (thisKey == KEY_RIGHT_ARROW) {
+        keyHeld_TurnRight = setTo;
+    }
+}
+
 function keyPressed(evt) {
-    document.getElementById("debugText").innerHTML = "Keycode Pushed:" + evt.keyCode;
-    if (evt.keyCode == KEY_UP_ARROW) {
-        carSpeed += 1.5;
-    }
-    if (evt.keyCode == KEY_DOWN_ARROW) {
-        carSpeed -= 1.5;
-    }
-    if (evt.keyCode == KEY_LEFT_ARROW) {
-        carAngle -= 0.25 * Math.PI;
-    }
-    if (evt.keyCode == KEY_RIGHT_ARROW) {
-        carAngle += 0.25 * Math.PI;
-    }
+    setKeyHoldState(evt.keyCode, true);
     evt.preventDefault();
 }
 
 function keyReleased(evt) {
-    document.getElementById("debugText").innerHTML = "KeyCode Released:" + evt.keyCode;
+    setKeyHoldState(evt.keyCode, false);
+    evt.preventDefault();
 }
 
 window.onload = function () {
@@ -162,9 +177,21 @@ function carReset() {
 }
 
 function moveEverything() {
-
+    if (keyHeld_TurnLeft && Math.abs(carSpeed) >= MIN_TURN_SPEED) {
+        carAngle += -TURN_RATE * Math.PI;
+    }
+    if (keyHeld_TurnRight && Math.abs(carSpeed) >= MIN_TURN_SPEED) {
+        carAngle += TURN_RATE * Math.PI;
+    }
+    if (keyHeld_Gas) {
+        carSpeed += DRIVE_POWER;
+    }
+    if (keyHeld_Reverse) {
+        carSpeed -= REVERSE_POWER;
+    }
     carX += Math.cos(carAngle) * carSpeed; // move the car based on its current horizontal speed 
     carY += Math.sin(carAngle) * carSpeed; // same as above, but for vertical
+    carSpeed *= GROUNDSPEED_DECAY_MULT;
 }
 
 function colorRect(topLeftX, topLeftY, boxWidth, boxHeight, fillColor) {
