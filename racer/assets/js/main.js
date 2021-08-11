@@ -2,6 +2,10 @@
 var carX = 75, carY = 75;
 var carSpeed = 0;
 
+var carPic = document.createElement("img");
+var carPicLoaded = false;
+var carAngle = -0.5 * Math.PI;
+
 // track constants and variables
 const TRACK_W = 40;
 const TRACK_H = 40;
@@ -17,6 +21,10 @@ const DRIVE_POWER = 0.5;
 const REVERSE_POWER = 0.2;
 const TURN_RATE = 0.03;
 const MIN_TURN_SPEED = 0.5;
+const TRACK_ROAD = 0;
+const TRACK_WALL = 1;
+const TRACK_PLAYER = 2;
+
 
 // keyboard hold state variables, to use keys more like buttons
 var keyHeld_Gas = false;
@@ -35,15 +43,12 @@ var trackGrid =
         1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1,
         1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1,
         1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1,
-        1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1,
+        1, 0, 2, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1,
         1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1,
         1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1,
         1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1,
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
 
-var carPic = document.createElement("img");
-var carPicLoaded = false;
-var carAngle = 0;
 
 // save the canvas for dimensions, and its 2d context for drawing to it
 var canvas, canvasContext;
@@ -64,12 +69,12 @@ function trackTileToIndex(tileCol, tileRow) {
     return (tileCol + TRACK_COLS * tileRow);
 }
 
-function isTrackAtTileCoord(trackTileCol, trackTileRow) {
+function isWallAtTileCoord(trackTileCol, trackTileRow) {
     var trackIndex = trackTileToIndex(trackTileCol, trackTileRow);
-    return (trackGrid[trackIndex] == 1);
+    return (trackGrid[trackIndex] == TRACK_WALL);
 }
 
-function bounceOffTrackAtPixelCoord(pixelX, pixelY) {
+function checkForTrackAtPixelCoord(pixelX, pixelY) {
     var tileCol = pixelX / TRACK_W;
     var tileRow = pixelY / TRACK_H;
 
@@ -85,41 +90,7 @@ function bounceOffTrackAtPixelCoord(pixelX, pixelY) {
 
     var trackIndex = trackTileToIndex(tileCol, tileRow);
 
-    if (trackGrid[trackIndex] == 1) {
-
-        // ok, so we know we overlap a track now.
-        // let's backtrack to see whether we changed rows or cols on way in
-        var prevCarX = carX - carSpeedX;
-        var prevCarY = carY - carSpeedY;
-        var prevTileCol = Math.floor(prevCarX / TRACK_W);
-        var prevTileRow = Math.floor(prevCarY / TRACK_H);
-
-        var bothTestsFailed = true;
-
-        if (prevTileCol != tileCol) { // must have come in horizontally
-            var adjacentTrackIndex = trackTileToIndex(prevTileCol, tileRow);
-            // make sure the side we want to reflect off isn't blocked!
-            if (trackGrid[adjacentTrackIndex] != 1) {
-                carSpeedX *= -1;
-                bothTestsFailed = false;
-            }
-        }
-
-        if (prevTileRow != tileRow) { // must have come in vertically
-            var adjacentTrackIndex = trackTileToIndex(tileCol, prevTileRow);
-            // make sure the side we want to reflect off isn't blocked!
-            if (trackGrid[adjacentTrackIndex] != 1) {
-                carSpeedY *= -1;
-                bothTestsFailed = false;
-            }
-        }
-
-        // we hit an "armpit" on the inside corner, this blocks going into it
-        if (bothTestsFailed) {
-            carSpeedX *= -1;
-            carSpeedY *= -1;
-        }
-    }
+    return (trackGrid[trackIndex] == TRACK_ROAD)
 }
 
 function setKeyHoldState(thisKey, setTo) {
@@ -172,8 +143,19 @@ window.onload = function () {
 
 function carReset() {
     // center car on screen
-    carX = canvas.width / 2 + 50;
-    carY = canvas.height / 2;
+    for (var i = 0; i < trackGrid.length; i++) {
+        if (trackGrid[i] == TRACK_PLAYER) {
+            var tileRow = Math.floor(i / TRACK_COLS);
+            var tileCol = i % TRACK_COLS;
+            trackGrid[i] = TRACK_ROAD;
+            break
+        }
+    }
+    carX = tileCol * TRACK_W + 0.5 * TRACK_W;
+    carY = tileRow * TRACK_H + 0.5 * TRACK_H;
+    document.getElementById("debugText").innerHTML =
+         "Car starting at tile: (" + tileCol + ", " + tileRow + ") " +
+         "Pixel coordinate: (" + carX + ", " + carY + ")";
 }
 
 function moveEverything() {
@@ -189,9 +171,20 @@ function moveEverything() {
     if (keyHeld_Reverse) {
         carSpeed -= REVERSE_POWER;
     }
-    carX += Math.cos(carAngle) * carSpeed; // move the car based on its current horizontal speed 
-    carY += Math.sin(carAngle) * carSpeed; // same as above, but for vertical
+    
+    var nextX = carX + Math.cos(carAngle) * carSpeed;
+    var nextY = carY + Math.sin(carAngle) * carSpeed;
+
+    if (checkForTrackAtPixelCoord(nextX, nextY)){
+        carX = nextX;
+        carY = nextY;
+    } else {
+        carSpeed = -0.5 * carSpeed;
+    }
+    // carX += Math.cos(carAngle) * carSpeed; // move the car based on its current horizontal speed 
+    // carY += Math.sin(carAngle) * carSpeed; // same as above, but for vertical
     carSpeed *= GROUNDSPEED_DECAY_MULT;
+
 }
 
 function colorRect(topLeftX, topLeftY, boxWidth, boxHeight, fillColor) {
@@ -206,11 +199,11 @@ function colorCircle(centerX, centerY, radius, fillColor) {
     canvasContext.fill();
 }
 
-function drawTracks() {
+function drawWalls() {
     for (var eachCol = 0; eachCol < TRACK_COLS; eachCol++) { // in each column...
         for (var eachRow = 0; eachRow < TRACK_ROWS; eachRow++) { // in each row within that col
 
-            if (isTrackAtTileCoord(eachCol, eachRow)) {
+            if (isWallAtTileCoord(eachCol, eachRow)) {
                 // compute the corner in pixel coordinates of the corresponding track
                 // multiply the track's tile coordinate by TRACK_W or TRACK_H for pixel distance
                 var trackLeftEdgeX = eachCol * TRACK_W;
@@ -241,7 +234,7 @@ function drawCar() {
 function drawEverything() {
     // clear the game view by filling it with black
     colorRect(0, 0, canvas.width, canvas.height, 'black');
-    drawTracks();
+    drawWalls();
 
     // draw the car
     drawCar();
