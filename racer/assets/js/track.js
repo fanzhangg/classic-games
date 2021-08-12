@@ -47,7 +47,10 @@ function checkForTrackAtPixelCoord(pixelX, pixelY) {
 
     var trackIndex = trackTileToIndex(tileCol, tileRow);
 
-    return (trackGrid[trackIndex] == TRACK_ROAD);
+    var trackNum  = trackGrid[trackIndex]
+    
+    // Allow the car to ride on the goal and the raod
+    return (trackNum == TRACK_ROAD || trackNum == TRACK_GOAL);
 }
 
 function drawTracks() {
