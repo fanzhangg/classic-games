@@ -51,14 +51,20 @@ function checkForTrackAtPixelCoord(pixelX, pixelY) {
 }
 
 function drawTracks() {
-    for (var eachCol = 0; eachCol < TRACK_COLS; eachCol++) { // in each column...
-        for (var eachRow = 0; eachRow < TRACK_ROWS; eachRow++) { // in each row within that col
-            var trackLeftEdgeX = eachCol * TRACK_W;
-            var trackTopEdgeY = eachRow * TRACK_H;
-            var trackIndex = trackTileToIndex(eachCol, eachRow);
+    var trackIndex = 0;
+    var trackLeftEdgeX = 0;
+    var trackTopEdgeY = 0;
+
+    for (var eachRow = 0; eachRow < TRACK_ROWS; eachRow++) { // in each column...
+        trackLeftEdgeX = 0;
+        for (var eachCol = 0; eachCol < TRACK_COLS; eachCol++) { // in each row within that col
             var trackType = trackGrid[ trackIndex ]
 
             canvasContext.drawImage(trackPics[trackType], trackLeftEdgeX, trackTopEdgeY);
+
+            trackLeftEdgeX += TRACK_W;
+            trackIndex++;
         } // end of for eachRow
+        trackTopEdgeY += TRACK_H;
     } // end of for eachCol
 } // end of drawTracks()
