@@ -12,6 +12,20 @@ function carClass() {
     this.carSpeed = 0;
     this.carAng = -0.5 * Math.PI;
 
+    // keyboard hold state variables, to use keys more like buttons
+    this.keyHeld_Gas = false;
+    this.keyHeld_Reverse = false;
+    this.keyHeld_TurnLeft = false;
+    this.keyHeld_TurnRight = false;
+
+    // key controls used for this car 
+    this.setupControls = function(forwardKey,backKey,leftKey,rightKey) {
+        this.controlKeyForGas = forwardKey;
+        this.controlKeyForReverse = backKey;
+        this.controlKeyForTurnLeft = leftKey;
+        this.controlKeyForTurnRight = rightKey;
+    }
+
     this.init = function() {
         this.reset();
     }
@@ -32,19 +46,19 @@ function carClass() {
     this.move = function() {
         // only allow the car to turn while it's rolling
     if (Math.abs(this.carSpeed) > MIN_TURN_SPEED) {
-        if (keyHeld_TurnLeft) {
+        if (this.keyHeld_TurnLeft) {
             this.carAng -= TURN_RATE * Math.PI;
         }
 
-        if (keyHeld_TurnRight) {
+        if (this.keyHeld_TurnRight) {
             this.carAng += TURN_RATE * Math.PI;
         }
     }
 
-    if (keyHeld_Gas) {
+    if (this.keyHeld_Gas) {
         this.carSpeed += DRIVE_POWER;
     }
-    if (keyHeld_Reverse) {
+    if (this.keyHeld_Reverse) {
         this.carSpeed -= REVERSE_POWER;
     }
 
