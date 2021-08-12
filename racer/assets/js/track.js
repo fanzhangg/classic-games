@@ -3,33 +3,32 @@ const TRACK_W = 40;
 const TRACK_H = 40;
 const TRACK_COLS = 20;
 const TRACK_ROWS = 15;
-var trackGrid =
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-        1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
-        1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-        1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1,
-        1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1,
-        1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1,
-        1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1,
-        1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1,
-        1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1,
-        1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1,
-        1, 0, 2, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1,
-        1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1,
-        1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1,
-        1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1,
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+// 0 road, 1 wall, 2 car, 3 goal, 4 tree, 5 flag
+var trackGrid = //// now with 3's (GOAL), 4's (TREE), 5's (FLAG)
+    [ 4, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4,
+      4, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
+      1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+      1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1,
+      1, 0, 0, 0, 1, 1, 1, 4, 4, 4, 4, 1, 1, 1, 1, 1, 1, 0, 0, 1,
+      1, 0, 0, 1, 1, 0, 0, 1, 4, 4, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1,
+      1, 0, 0, 1, 0, 0, 0, 0, 1, 4, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1,
+      1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1,
+      1, 0, 2, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 5, 0, 0, 1, 0, 0, 1,
+      1, 3, 3, 1, 0, 0, 5, 0, 0, 0, 5, 0, 0, 1, 0, 0, 1, 0, 0, 1,
+      1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 5, 0, 0, 1,
+      1, 0, 0, 5, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1,
+      1, 0, 0, 0, 0, 0, 1, 4, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1,
+      1, 0, 0, 0, 0, 0, 1, 4, 4, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1,
+      1, 1, 5, 1, 1, 1, 1, 4, 4, 4, 4, 4, 4, 1, 1, 1, 1, 1, 1, 1];
 const TRACK_ROAD = 0;
 const TRACK_WALL = 1;
 const TRACK_PLAYER = 2;
+const TRACK_GOAL = 3;
+const TRACK_TREE = 4;
+const TRACK_FLAG = 5;
 
 function trackTileToIndex(tileCol, tileRow) {
     return (tileCol + TRACK_COLS * tileRow);
-}
-
-function isWallAtTileCoord(trackTileCol, trackTileRow) {
-    var trackIndex = trackTileToIndex(trackTileCol, trackTileRow);
-    return (trackGrid[trackIndex] == TRACK_WALL);
 }
 
 function checkForTrackAtPixelCoord(pixelX, pixelY) {
@@ -56,12 +55,10 @@ function drawTracks() {
         for (var eachRow = 0; eachRow < TRACK_ROWS; eachRow++) { // in each row within that col
             var trackLeftEdgeX = eachCol * TRACK_W;
             var trackTopEdgeY = eachRow * TRACK_H;
+            var trackIndex = trackTileToIndex(eachCol, eachRow);
+            var trackType = trackGrid[ trackIndex ]
 
-            if (isWallAtTileCoord(eachCol, eachRow)) {
-                canvasContext.drawImage(trackPicWall, trackLeftEdgeX, trackTopEdgeY);
-            } else {
-                canvasContext.drawImage(trackPicRoad, trackLeftEdgeX, trackTopEdgeY);
-            }
+            canvasContext.drawImage(trackPics[trackType], trackLeftEdgeX, trackTopEdgeY);
         } // end of for eachRow
     } // end of for eachCol
 } // end of drawTracks()
