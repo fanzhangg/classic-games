@@ -3,9 +3,6 @@ var carX = 75, carY = 75;
 var carSpeed = 0;
 var carAng = -0.5 * Math.PI;
 
-var carPic = document.createElement("img");
-var carPicLoaded = false;
-
 // car tuning constants
 const GROUNDSPEED_DECAY_MULT = 0.94;
 const DRIVE_POWER = 0.5;
@@ -14,11 +11,6 @@ const TURN_RATE = 0.03;
 const MIN_TURN_SPEED = 0.5;
 
 function carInit() {
-    carPic.onload = function () {
-        carPicLoaded = true;
-    }
-    carPic.src = "./assets/img/player1.png"
-
     carReset();
 }
 
@@ -69,7 +61,5 @@ function carMove() { ////
 }
 
 function carDraw() {
-    if (carPicLoaded) {
-        drawBitmapCenteredAtLocationWithRotation(carPic, carX, carY, carAng);
-    }
+    drawBitmapCenteredAtLocationWithRotation(carPic, carX, carY, carAng);
 }
