@@ -1,6 +1,8 @@
 // save the canvas for dimensions, and its 2d context for drawing to it
 var canvas, canvasContext;
 
+var p1 = new carClass();
+
 window.onload = function () {
     canvas = document.getElementById('gameCanvas');
     canvasContext = canvas.getContext('2d');
@@ -9,14 +11,14 @@ window.onload = function () {
 }
 
 function moveEverything() {
-    carMove();
+    p1.move();
 }
 
 function drawEverything() {
     // clear the game view by filling it with black
     drawTracks();
     // draw the car
-    carDraw();
+    p1.draw();
 }
 
 function startGame() {
@@ -27,10 +29,6 @@ function startGame() {
         drawEverything();
     }, 1000 / framesPerSecond);
 
-    carPic.onload = function () {
-        carPicLoaded = true;
-    }
-
-    carInit();
+    p1.init();
     initInput();
 }
