@@ -66,11 +66,17 @@ function carClass() {
     var nextX = this.carX + Math.cos(this.carAng) * this.carSpeed;
     var nextY = this.carY + Math.sin(this.carAng) * this.carSpeed;
 
-    if (checkForTrackAtPixelCoord(nextX, nextY)) {
+    var nextTileType = getTrackAtPixelCoord(nextX, nextY);
+
+    if (nextTileType == TRACK_ROAD || nextTileType == TRACK_GOAL) {
         this.carX = nextX;
         this.carY = nextY;
     } else {
         this.carSpeed = - 0.5 * this.carSpeed;
+    }
+    
+    if (nextTileType == TRACK_GOAL) {
+        document.getElementById("debugText").innerHTML = "someone hit the goal line";
     }
 
     this.carSpeed *= GROUNDSPEED_DECAY_MULT;
