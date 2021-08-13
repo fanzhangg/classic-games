@@ -22,6 +22,17 @@ function drawEverything() {
     // draw the car
     p1.draw();
     p2.draw();
+
+    if (p1.currentRecord) {
+        document.getElementById("current-record").innerHTML = `${p1.currentRecord}`;
+    }
+
+    var records = ""
+    for (var record of p1.records){
+        records += `${record}<br>`
+        index += 1;
+    }
+    document.getElementById("records").innerHTML = records;
 }
 
 function startGame() {
