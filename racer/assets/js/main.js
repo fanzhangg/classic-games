@@ -2,6 +2,7 @@
 var canvas, canvasContext;
 
 var p1 = new carClass();
+var p2 = new carClass();
 
 window.onload = function () {
     canvas = document.getElementById('gameCanvas');
@@ -12,6 +13,7 @@ window.onload = function () {
 
 function moveEverything() {
     p1.move();
+    p2.move();
 }
 
 function drawEverything() {
@@ -19,6 +21,7 @@ function drawEverything() {
     drawTracks();
     // draw the car
     p1.draw();
+    p2.draw();
 }
 
 function startGame() {
@@ -29,6 +32,7 @@ function startGame() {
         drawEverything();
     }, 1000 / framesPerSecond);
 
-    p1.init();
+    p1.init(carPic);
+    p2.init(carPic2);
     initInput();
 }

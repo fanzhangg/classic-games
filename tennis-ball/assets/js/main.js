@@ -1,6 +1,6 @@
 var gameStatus = "start";
 
-const WINNING_SCORE = 3;
+const WINNING_SCORE = 12;
 
 var canvas, canvasContext;
 
