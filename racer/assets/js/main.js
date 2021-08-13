@@ -30,7 +30,6 @@ function drawEverything() {
     var records = ""
     for (var record of p1.records){
         records += `${record}<br>`
-        index += 1;
     }
     document.getElementById("records").innerHTML = records;
 }

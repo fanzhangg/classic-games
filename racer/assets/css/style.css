@@ -1,0 +1,11 @@
+.container {
+    display: flex;
+}
+
+.col {
+    margin: 10px;
+}
+
+.record {
+    font-family: 'Poppins', sans-serif;
+}
