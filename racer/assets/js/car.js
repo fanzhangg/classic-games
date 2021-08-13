@@ -26,8 +26,9 @@ function carClass() {
         this.controlKeyForTurnRight = rightKey;
     }
 
-    this.init = function(graphic) {
+    this.init = function(graphic, name) {
         this.myBitmap = graphic;
+        this.myName = name;
         this.reset();
     }
 
@@ -76,7 +77,7 @@ function carClass() {
     }
     
     if (nextTileType == TRACK_GOAL) {
-        document.getElementById("debugText").innerHTML = "someone hit the goal line";
+        document.getElementById("debugText").innerHTML = `${this.myName} won the game`;
     }
 
     this.carSpeed *= GROUNDSPEED_DECAY_MULT;

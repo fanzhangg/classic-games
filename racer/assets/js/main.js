@@ -32,7 +32,7 @@ function startGame() {
         drawEverything();
     }, 1000 / framesPerSecond);
 
-    p1.init(carPic);
-    p2.init(carPic2);
+    p1.init(carPic, "red");
+    p2.init(carPic2, "blue");
     initInput();
 }
